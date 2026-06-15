@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PixelScape — Wallpapers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d10;
+      --surface: #18181f;
+      --card: #1e1e28;
+      --border: #2a2a38;
+      --accent: #7c5cfc;
+      --accent2: #e85dff;
+      --text: #f0eeff;
+      --muted: #7a7a99;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,16,0.85);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-btn {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .nav-btn:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 320px;
+      background: radial-gradient(ellipse, rgba(124,92,252,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto 2.2rem;
+      line-height: 1.7;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .search-box {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 480px;
+    }
+    .search-box input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 0.92rem;
+      padding: 0.7rem 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .search-box button {
+      background: var(--accent);
+      border: none;
+      padding: 0 1.2rem;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+    .search-box button:hover { opacity: 0.85; }
+
+    /* CATEGORIES */
+    .categories {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      padding: 0 2rem 2.5rem;
+    }
+    .cat-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.18s;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* GRID */
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      padding: 0 2.5rem 1.4rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      padding: 0 2rem 3.5rem;
+    }
+    .card {
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 9/16;
+      cursor: pointer;
+      transition: transform 0.22s, box-shadow 0.22s;
+      background: var(--card);
+    }
+    .card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 40px rgba(124,92,252,0.22);
+    }
+    .card-bg {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Generated gradient wallpaper thumbnails */
+    .card-bg-gen {
+      width: 100%; height: 100%;
+    }
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.22s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+    }
+    .card:hover .card-overlay { opacity: 1; }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .card-meta {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 0.7rem;
+    }
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn-dl, .btn-fav {
+      border: none;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.18s;
+    }
+    .btn-dl { background: var(--accent); color: white; }
+    .btn-fav { background: rgba(255,255,255,0.15); color: white; }
+    .btn-dl:hover, .btn-fav:hover { opacity: 0.8; }
+
+    /* BADGE */
+    .badge {
+      position: absolute;
+      top: 0.75rem; left: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .badge-new { background: var(--accent2); color: white; }
+    .badge-hot { background: #fc5c5c; color: white; }
+    .badge-4k  { background: var(--accent); color: white; }
+
+    /* RESOLUTION FILTER */
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem 1.2rem;
+    }
+    .res-btns { display: flex; gap: 0.5rem; }
+    .res-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.3rem 0.7rem;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.18s;
+    }
+    .res-btn.active, .res-btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+    .sort-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.3rem 0.7rem;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer .logo { font-size: 1.1rem; }
+    footer p { font-size: 0.8rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--accent);
+      color: white;
+      padding: 0.75rem 1.4rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 999;
+      pointer-events: none;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { display: none; }
+      .grid { padding: 0 1rem 2.5rem; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
+      .section-label, .filters { padding-left: 1.2rem; padding-right: 1.2rem; }
+      .categories { padding: 0 1.2rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">PixelScape</div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Explore</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Artists</a></li>
+    <li><a href="#">Favourites</a></li>
+  </ul>
+  <button class="nav-btn">Upload</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Free · 4K · No sign-up</p>
+  <h1>Beautiful wallpapers<br/>for every <span>screen</span></h1>
+  <p>Curated photography, digital art and abstracts — download any resolution, completely free.</p>
+  <div class="search-wrap">
+    <div class="search-box">
+      <input id="searchInput" type="text" placeholder="Search mountains, neon, space…" />
+      <button onclick="handleSearch()">Search</button>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<div class="categories" id="categories">
+  <button class="cat-btn active" onclick="filterCat(this,'All')">All</button>
+  <button class="cat-btn" onclick="filterCat(this,'Nature')">🌿 Nature</button>
+  <button class="cat-btn" onclick="filterCat(this,'Abstract')">🎨 Abstract</button>
+  <button class="cat-btn" onclick="filterCat(this,'Space')">🚀 Space</button>
+  <button class="cat-btn" onclick="filterCat(this,'City')">🏙 City</button>
+  <button class="cat-btn" onclick="filterCat(this,'Minimal')">◻ Minimal</button>
+  <button class="cat-btn" onclick="filterCat(this,'Dark')">🌑 Dark</button>
+  <button class="cat-btn" onclick="filterCat(this,'Anime')">✨ Anime</button>
+</div>
+
+<!-- SECTION -->
+<div class="filters">
+  <div class="section-label" style="padding:0">Trending</div>
+  <div style="display:flex;gap:0.8rem;align-items:center">
+    <div class="res-btns">
+      <button class="res-btn active">All</button>
+      <button class="res-btn">4K</button>
+      <button class="res-btn">HD</button>
+      <button class="res-btn">Mobile</button>
+    </div>
+    <select class="sort-select">
+      <option>Popular</option>
+      <option>Newest</option>
+      <option>Downloads</option>
+    </select>
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="grid"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">PixelScape</div>
+  <p>© 2026 PixelScape. All wallpapers are free to use.</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">License</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<div id="toast">✓ Download started!</div>
+
+<script>
+  const wallpapers = [
+    { title:"Aurora Veil", cat:"Nature", res:"4K", badge:"4k", gradient:"linear-gradient(160deg,#0f2027,#1a5276,#76d7c4)" },
+    { title:"Midnight Bloom", cat:"Abstract", res:"HD", badge:"new", gradient:"linear-gradient(135deg,#1a0030,#7c5cfc,#e85dff,#ff6b6b)" },
+    { title:"Red Dwarf", cat:"Space", res:"4K", badge:"hot", gradient:"linear-gradient(160deg,#0a0010,#3d0000,#8b0000,#ff4500)" },
+    { title:"Neon City Rain", cat:"City", res:"Mobile", badge:"new", gradient:"linear-gradient(170deg,#050510,#0033cc,#00ccff,#cc00ff)" },
+    { title:"Void Grid", cat:"Minimal", res:"4K", badge:"", gradient:"linear-gradient(135deg,#050505,#1a1a1a,#2a2a2a)" },
+    { title:"Deep Ocean", cat:"Nature", res:"HD", badge:"", gradient:"linear-gradient(170deg,#000d1a,#003366,#006699,#00cccc)" },
+    { title:"Lava Flow", cat:"Abstract", res:"4K", badge:"hot", gradient:"linear-gradient(145deg,#1a0000,#8b0000,#ff4500,#ffd700)" },
+    { title:"Nebula Gate", cat:"Space", res:"4K", badge:"4k", gradient:"linear-gradient(155deg,#020010,#2e006a,#7c5cfc,#e85dff)" },
+    { title:"Forest Mist", cat:"Nature", res:"HD", badge:"", gradient:"linear-gradient(160deg,#0a1a0a,#1a4a1a,#4a8a4a,#a8d8a8)" },
+    { title:"Sakura Dream", cat:"Anime", res:"Mobile", badge:"new", gradient:"linear-gradient(160deg,#1a0020,#8b0057,#ff69b4,#ffe4f0)" },
+    { title:"Concrete Noir", cat:"Dark", res:"4K", badge:"", gradient:"linear-gradient(135deg,#050505,#111,#1e1e1e,#2a2a2a)" },
+    { title:"Synthwave Coast", cat:"City", res:"HD", badge:"hot", gradient:"linear-gradient(160deg,#0a0020,#cc00ff,#ff0066,#ff6600)" },
+  ];
+
+  let activeCategory = "All";
+
+  function renderGrid(items) {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    items.forEach((w, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.cat = w.cat;
+      card.innerHTML = `
+        <div class="card-bg-gen" style="background:${w.gradient};width:100%;height:100%;"></div>
+        ${w.badge ? `<span class="badge badge-${w.badge}">${w.badge === '4k' ? '4K' : w.badge}</span>` : ''}
+        <div class="card-overlay">
+          <div class="card-title">${w.title}</div>
+          <div class="card-meta">${w.res} · ${w.cat}</div>
+          <div class="card-actions">
+            <button class="btn-dl" onclick="download(event,'${w.title}')">↓ Download</button>
+            <button class="btn-fav" onclick="fav(event,this)">♡ Save</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterCat(btn, cat) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = cat;
+    const filtered = cat === 'All' ? wallpapers : wallpapers.filter(w => w.cat === cat);
+    renderGrid(filtered);
+  }
+
+  function handleSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (!q) { renderGrid(wallpapers); return; }
+    const res = wallpapers.filter(w => w.title.toLowerCase().includes(q) || w.cat.toLowerCase().includes(q));
+    renderGrid(res.length ? res : wallpapers);
+    if (!res.length) showToast('No results — showing all');
+  }
+
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSearch();
+  });
+
+  document.querySelectorAll('.res-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.res-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const r = btn.textContent.trim();
+      const base = activeCategory === 'All' ? wallpapers : wallpapers.filter(w => w.cat === activeCategory);
+      const filtered = r === 'All' ? base : base.filter(w => w.res === r);
+      renderGrid(filtered.length ? filtered : base);
+    });
+  });
+
+  function download(e, title) {
+    e.stopPropagation();
+    showToast(`↓ Downloading "${title}"…`);
+  }
+
+  function fav(e, btn) {
+    e.stopPropagation();
+    const saved = btn.textContent.includes('♡');
+    btn.textContent = saved ? '♥ Saved' : '♡ Save';
+    btn.style.background = saved ? 'rgba(232,93,255,0.4)' : 'rgba(255,255,255,0.15)';
+    if (saved) showToast('Added to Favourites');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  renderGrid(wallpapers);
+</script>
+</body>
+</html>
